@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    ports:
+      - 8000:80
+    volumes:
+      - ./backend:/var/www
+    depends_on:
+      - db
+    networks:
+      - empleados_net
+    environment:
+      - DB_HOST=db
+
+  db:
+    image: mysql:8
+    container_name: mysql_db
+    restart: unless-stopped
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: empleados
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - empleados_net
+
+  angular:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: angular_app
+    ports:
+      - 4200:4200
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+    - NODE_ENV=development
+    - CHOKIDAR_USEPOLLING=true
+    networks:
+      - empleados_net
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+networks:
+  empleados_net:
+
+volumes:
+  mysql_data:
