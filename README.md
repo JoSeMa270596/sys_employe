@@ -38,3 +38,14 @@ Este proyecto es una solución para la gestión de empleados de una empresa, des
 ```bash
 git clone https://github.com/tuusuario/empleados-system.git
 cd empleados-system
+```
+
+### Contruir el contenedor
+```bash
+docker-compose up --build
+```
+
+### Ejecutar la migracion
+```bash
+docker exec -it laravel_app php artisan migrate
+```

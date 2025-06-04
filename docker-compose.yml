@@ -16,6 +16,9 @@ services:
       - empleados_net
     environment:
       - DB_HOST=db
+      - DB_DATABASE=empleados
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=laravel
 
   db:
     image: mysql:8

@@ -19,4 +19,25 @@ RUN apt-get update && apt-get install -y \
 # Instalación de Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
+# Configura Apache
+RUN a2enmod rewrite
+COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
+
 WORKDIR /var/www
+
+# Copiar los archivos del proyecto (excepto lo definido en .dockerignore)
+COPY . .
+
+# Configuración inicial de Laravel
+RUN set -x \
+    && composer install --no-interaction --optimize-autoloader \
+    && cp .env.example .env \
+    && php artisan key:generate \
+    && chmod -R 777 storage bootstrap/cache \
+    && chown -R www-data:www-data /var/www \
+    && php artisan migrate
+
+# Puerto expuesto
+EXPOSE 80
+
+CMD ["apache2-foreground"]
