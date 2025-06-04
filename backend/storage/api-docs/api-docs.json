@@ -1,0 +1,30 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Gestión de Empleados",
+        "description": "Documentación de la API de empleados usando Swagger",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/employees": {
+            "get": {
+                "tags": [
+                    "Empleados"
+                ],
+                "summary": "Listar empleados",
+                "operationId": "a3e54d268b8f288839f2da4b94c0974f",
+                "responses": {
+                    "200": {
+                        "description": "Lista de empleados"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Empleados",
+            "description": "Empleados"
+        }
+    ]
+}
