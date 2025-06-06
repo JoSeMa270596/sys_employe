@@ -46,7 +46,7 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo(Permission::all());
 
         // Rol Jefe
-        $jefe = Role::firstOrCreate(['name' => 'jefe']);
+        $jefe = Role::firstOrCreate(['name' => 'chief']);
         $jefe->givePermissionTo([
             'view_dashboard',
             'view_user',
@@ -55,7 +55,7 @@ class RoleSeeder extends Seeder
         ]);
 
         // Rol Empleado
-        $empleado = Role::firstOrCreate(['name' => 'empleado']);
+        $empleado = Role::firstOrCreate(['name' => 'employee']);
         $empleado->givePermissionTo([
             'view_dashboard',
             'view_user'
