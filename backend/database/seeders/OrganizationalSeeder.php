@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,8 +18,6 @@ class OrganizationalSeeder extends Seeder
     {
         // Obtener roles
         $adminRole = Role::where('name', 'admin')->first();
-        $jefeRole = Role::where('name', 'jefe')->first();
-        $empleadoRole = Role::where('name', 'empleado')->first();
 
         // 1. Crear Administrador
         $admin = User::create([
@@ -28,65 +27,38 @@ class OrganizationalSeeder extends Seeder
         ]);
         $admin->assignRole($adminRole);
 
-        // 2. Crear Jefes de Departamento
-        $jefes = [
+        // 2. Crear Departamentos
+        $departments = [
             [
-                'name' => 'Jefe de Ventas',
-                'email' => 'jefe.ventas@empresa.com',
-                'password' => Hash::make('JefeVentas123'),
-                'department' => 'Ventas'
+                'name' => 'Ventas',
+                'description' => 'Departamento de ventas y atención al cliente'
             ],
             [
-                'name' => 'Jefe de Producción',
-                'email' => 'jefe.produccion@empresa.com',
-                'password' => Hash::make('JefeProd123'),
-                'department' => 'Producción'
-            ]
-        ];
-        $createdJefes = [];
-        foreach ($jefes as $jefeData) {
-            $jefe = User::create($jefeData);
-            $jefe->assignRole($jefeRole);
-            $createdJefes[] = $jefe;
-        }
-
-        // 3. Crear Empleados (2 por cada jefe)
-        $empleados = [
-            // Empleados del Jefe de Ventas
-            [
-                'name' => 'Vendedor 1',
-                'email' => 'vendedor1@empresa.com',
-                'password' => Hash::make('Vendedor1123'),
-                'department' => 'Ventas',
-                'supervisor_id' => $createdJefes[0]->id
+                'name' => 'Desarrollo',
+                'description' => 'Departamento de desarrollo de software'
             ],
             [
-                'name' => 'Vendedor 2',
-                'email' => 'vendedor2@empresa.com',
-                'password' => Hash::make('Vendedor2123'),
-                'department' => 'Ventas',
-                'supervisor_id' => $createdJefes[0]->id
-            ],
-            // Empleados del Jefe de Producción
-            [
-                'name' => 'Operador 1',
-                'email' => 'operador1@empresa.com',
-                'password' => Hash::make('Operador1123'),
-                'department' => 'Producción',
-                'supervisor_id' => $createdJefes[1]->id
-            ],
-            [
-                'name' => 'Operador 2',
-                'email' => 'operador2@empresa.com',
-                'password' => Hash::make('Operador2123'),
-                'department' => 'Producción',
-                'supervisor_id' => $createdJefes[1]->id
+                'name' => 'Recursos Humanos',
+                'description' => 'Departamento de gestión de personal'
             ]
         ];
 
-        foreach ($empleados as $empleadoData) {
-            $empleado = User::create($empleadoData);
-            $empleado->assignRole($empleadoRole);
+        foreach ($departments as $departmentData) {
+            $department = Department::create($departmentData);
+
+            // Llamar al seeder de empleados para este departamento
+            $this->callWith(EmployeeSeeder::class, [
+                'department' => $department,
+                'isChief' => true
+            ]);
+
+            // Crear 4 empleados adicionales (no jefes)
+            for ($i = 0; $i < 4; $i++) {
+                $this->callWith(EmployeeSeeder::class, [
+                    'department' => $department,
+                    'isChief' => false
+                ]);
+            }
         }
     }
 }
