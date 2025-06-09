@@ -20,7 +20,7 @@ class AuthController extends Controller
     /**
      * @OA\Post(
      *     path="/api/register",
-     *     summary="Registro de usuario",
+     *     summary="Registro de usuario, por defecto empleado",
      *     tags={"Autenticación"},
      *     @OA\RequestBody(
      *         required=true,
@@ -60,15 +60,17 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $user->assignRole('employee');
+
         try {
             $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+            return response()->json(['error' => 'No se pudo crear el token'], 500);
         }
 
         return response()->json([
             'token' => $token,
-            'user' => $user,
+            'user' => $user->load('roles', 'permissions'),
         ], 201);
     }
 
@@ -112,7 +114,7 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Credenciales inválidas'], 401);
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+            return response()->json(['error' => 'No se pudo crear el token'], 500);
         }
 
         return response()->json([
@@ -171,11 +173,29 @@ class AuthController extends Controller
     public function getUser()
     {
         try {
+            /** @var \App\Models\User|null $user */
             $user = Auth::user();
             if (!$user) {
-                return response()->json(['error' => 'Usuario no encontrado'], 404);
+                // Si Auth::user() devuelve null, el usuario no está autenticado
+                return response()->json(['error' => 'Usuario no autenticado o token inválido'], 401);
             }
-            return response()->json($user);
+
+            // Carga los roles del usuario
+            $user->load('roles');
+            // Obtiendo todos los permisos que tiene el usuario
+            $allPermissions = $user->getAllPermissions()->pluck('name');
+            return response()->json($user->load('roles', 'permissions'));
+
+            return response()->json([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'roles' => $user->roles,
+                'permissions' => $allPermissions
+            ]);
         } catch (JWTException $e) {
             return response()->json(['error' => 'No se pudo obtener el perfil del usuario'], 500);
         }

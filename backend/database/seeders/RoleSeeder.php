@@ -24,38 +24,38 @@ class RoleSeeder extends Seeder
             'list_user',
             'view_user',
             'create_user',
-            'edith_user',
+            'edit_user',
             'delete_user',
             // employe
             'list_employe',
             'create_employe',
-            'edith_employe',
+            'edit_employe',
             'delete_employe',
-            // boss
-            'list_boss',
-            'create_boss',
-            'edith_boss',
-            'delete_boss',
-            'view_reports',
+            // department
+            'list_department',
+            'create_department',
+            'edit_department',
+            'delete_department',
+            'assign_chief',
         ];
+        $apiGuard = 'api';
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => $apiGuard]);
         }
         // Rol Admin - Todos los permisos
-        $admin = Role::firstOrCreate(['name' => 'admin']);
-        $admin->givePermissionTo(Permission::all());
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => $apiGuard]);
+        $admin->givePermissionTo(Permission::where('guard_name', $apiGuard)->get());
 
         // Rol Jefe
-        $jefe = Role::firstOrCreate(['name' => 'chief']);
+        $jefe = Role::firstOrCreate(['name' => 'chief', 'guard_name' => $apiGuard]);
         $jefe->givePermissionTo([
             'view_dashboard',
             'view_user',
-            'list_employe',
-            'view_reports'
+            'list_employe'
         ]);
 
         // Rol Empleado
-        $empleado = Role::firstOrCreate(['name' => 'employee']);
+        $empleado = Role::firstOrCreate(['name' => 'employee', 'guard_name' => $apiGuard]);
         $empleado->givePermissionTo([
             'view_dashboard',
             'view_user'
