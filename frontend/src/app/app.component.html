@@ -1,3 +1,32 @@
-<h1 class="text-3xl font-bold underline bg-red-500 text-center">
-  Hello world!
-</h1>
+<div class="flex h-screen bg-gray-100">
+  <aside class="w-64 bg-white shadow-md p-4">
+    <h2 class="text-xl font-semibold mb-6">BTSoft</h2>
+    <nav>
+      <ul>
+        <li class="mb-2">
+          <a
+            routerLink="/employee"
+            routerLinkActive="text-blue-700 bg-blue-100 font-medium"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="block p-2 rounded-md hover:bg-gray-100"
+          >
+            Empleados
+          </a>
+        </li>
+        <li class="mb-2">
+          <a
+            routerLink="/department"
+            routerLinkActive="text-blue-700 bg-blue-100 font-medium"
+            class="block p-2 rounded-md hover:bg-gray-100"
+          >
+            Departamentos
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-8">
+    <router-outlet></router-outlet>
+  </main>
+</div>
