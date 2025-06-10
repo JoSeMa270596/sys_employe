@@ -1,0 +1,19 @@
+<div class="max-w-md mx-auto p-6 bg-white shadow">
+  <h2 class="text-2xl font-bold mb-4">Iniciar sesión</h2>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-4">
+      <label>Email</label>
+      <input [(ngModel)]="email" name="email" class="border p-2 w-full" required />
+    </div>
+
+    <div class="mb-4">
+      <label>Contraseña</label>
+      <input type="password" [(ngModel)]="password" name="password" class="border p-2 w-full" required />
+    </div>
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2">Ingresar</button>
+
+    <p class="text-red-500 mt-2" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </form>
+</div>
