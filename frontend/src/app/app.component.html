@@ -1,6 +1,14 @@
 <div class="flex h-screen bg-gray-100">
   <aside class="w-64 bg-white shadow-md p-4">
-    <h2 class="text-xl font-semibold mb-6">BTSoft</h2>
+    <h2 class="flex flex-row justify-between text-xl font-semibold mb-6">
+      {{ title }}
+      <button
+        (click)="logout()"
+        class="text-left p-2 rounded-md text-red-600 hover:bg-red-100"
+      >
+        Salir
+      </button>
+    </h2>
     <nav>
       <ul>
         <li class="mb-2">
