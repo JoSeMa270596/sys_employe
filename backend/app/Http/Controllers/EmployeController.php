@@ -145,9 +145,11 @@ class EmployeController extends Controller
             'last_name' => 'required|string',
             'department_id' => 'required|exists:departments,id',
             'hire_date' => 'required|date',
-            'status' => 'in:activo,inactivo',
+            'status' => 'in:active,inactive,suspended,on_leave',
         ]);
         $employee = Employee::create($validated);
+        $employee->load(['user', 'department']);
+
         return response()->json($employee, 201);
     }
 
@@ -248,6 +250,8 @@ class EmployeController extends Controller
         ]);
 
         $employee->update($validated);
+        $employee->load(['user', 'department']);
+
         return response()->json($employee);
     }
 
